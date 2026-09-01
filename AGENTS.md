@@ -240,7 +240,7 @@ This pin is temporary and exists only to keep these comparison runs consistent.
    and program checks in separate sections and aggregates; do not combine their
    scores. Push artifacts as needed during or after the run. Otherwise, do not
    create a branch or pull request for the artifacts or upload them.
-2. Run one complete prompt across all configured arms as a smoke check before
+2. Run one complete prompt across all configurations as a smoke check before
    starting a long suite.
 3. Check health after the first complete triplet or first three reports.
 4. Check again every 30 minutes or 10 completed evaluations.
@@ -250,7 +250,7 @@ This pin is temporary and exists only to keep these comparison runs consistent.
    calls, malformed tool invocation text, and stalled output.
 6. Highlight systemic risks immediately, including a runtime checksum or config
    mismatch, any MCP load or tool-call timeout, repeated tool failures, or the
-   same infrastructure anomaly in multiple arms.
+   same infrastructure anomaly in multiple configurations.
 7. Do not stop, cancel, retry, replace, or exclude results without the user's
    direction. Preserve failed attempts so the user can decide how to proceed.
 8. Before generating comparisons, report the final expected report count,

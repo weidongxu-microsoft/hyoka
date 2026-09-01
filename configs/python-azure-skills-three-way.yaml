@@ -1,4 +1,4 @@
-# Three-arm comparison: baseline, Azure skills, and Azure skills plus SDK skills.
+# Three-configuration comparison: baseline, Azure skills, and Azure skills plus SDK skills.
 # Do not run with --pairwise; select all three config names explicitly.
 configs:
   - name: python-azure-skills/baseline

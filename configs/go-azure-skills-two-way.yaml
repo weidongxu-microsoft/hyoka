@@ -1,4 +1,4 @@
-# Two-arm comparison: baseline and Azure skills plus Azure MCP.
+# Two-configuration comparison: baseline and Azure skills plus Azure MCP.
 # No Azure SDK for Go plugin is currently available in microsoft/skills.
 configs:
   - name: go-azure-skills/baseline
