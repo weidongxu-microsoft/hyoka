@@ -54,8 +54,10 @@ coding agent.
 The Python stream completed all 10 generations with final responses and
 generated files. The `evaluation-run` case generated 60 files, causing all six
 review requests to exceed the model token limit. Its Program Check passed, but
-its Prompt and Language Checks are unavailable; the preserved result is the
-only current infrastructure retry candidate.
+its Prompt and Language Checks are unavailable. One controlled retry returned
+an HTTP 400 "resource not found" generation error and produced no files, so it
+was not selected. Both attempts remain preserved, and no further retry is
+scheduled.
 
 The JavaScript/TypeScript stream preserved 10/10 primary reports. `file-search`
 and `evaluation-run` reached 51/50 session actions and returned partial results.
