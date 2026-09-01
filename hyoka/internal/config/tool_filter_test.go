@@ -366,6 +366,46 @@ func TestValidateToolEntry_RemoteMCPValid(t *testing.T) {
 	}
 }
 
+func TestValidateToolEntry_RemoteMCPAzureCLIAuthValid(t *testing.T) {
+	entry := ToolEntry{
+		Name:      "remote-mcp",
+		Type:      "mcp",
+		MCPType:   "remote",
+		URL:       "https://mcp.example.com",
+		MCPAuth:   "azure_cli",
+		MCPScopes: []string{"https://mcp.example.com/tools"},
+	}
+	if err := validateToolEntry(entry, "test", 0); err != nil {
+		t.Fatalf("unexpected error for valid Azure CLI MCP auth: %v", err)
+	}
+}
+
+func TestValidateToolEntry_RemoteMCPAzureCLIAuthRequiresScope(t *testing.T) {
+	entry := ToolEntry{
+		Name:    "remote-mcp",
+		Type:    "mcp",
+		MCPType: "remote",
+		URL:     "https://mcp.example.com",
+		MCPAuth: "azure_cli",
+	}
+	if err := validateToolEntry(entry, "test", 0); err == nil {
+		t.Fatal("expected error for Azure CLI MCP auth without a scope")
+	}
+}
+
+func TestValidateToolEntry_LocalMCPRejectsAuth(t *testing.T) {
+	entry := ToolEntry{
+		Name:      "local-mcp",
+		Type:      "mcp",
+		Command:   "example",
+		MCPAuth:   "azure_cli",
+		MCPScopes: []string{"scope"},
+	}
+	if err := validateToolEntry(entry, "test", 0); err == nil {
+		t.Fatal("expected error for MCP auth on a local server")
+	}
+}
+
 func TestValidateToolEntry_RemoteMCPMissingURL(t *testing.T) {
 	entry := ToolEntry{Name: "remote-mcp", Type: "mcp", MCPType: "remote"}
 	if err := validateToolEntry(entry, "test", 0); err == nil {

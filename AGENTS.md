@@ -201,8 +201,16 @@ Quick overview:
 
 ## Temporary Azure Skills Comparison Instructions
 
-These instructions apply only to `configs/*-azure-skills-three-way.yaml` and
+These instructions apply only to `configs/*-azure-skills-three-way.yaml`,
+`configs/*-azure-tools-comparison.yaml`, and
 `configs/go-azure-skills-two-way.yaml`.
+
+Run the Azure Tools comparison configs only with `--tags foundry` and select all
+three config names explicitly. The second arm includes Azure MCP, the remote
+Microsoft Foundry MCP, and general Azure skills but excludes language-specific
+`microsoft/skills`; the third arm adds those language-specific skills.
+A complete four-language Foundry run produces 120 reports (40 prompts times
+three arms).
 
 ### Runtime Pin
 
@@ -242,20 +250,22 @@ This pin is temporary and exists only to keep these comparison runs consistent.
    create a branch or pull request for the artifacts or upload them.
 2. Run one complete prompt across all configured arms as a smoke check before
    starting a long suite.
-3. Check health after the first complete triplet or first three reports.
+3. Check health after the first complete configured arm set or first three
+   reports.
 4. Check again every 30 minutes or 10 completed evaluations.
 5. Report progress and anomalies to the user. Include completed versus expected
-   reports, complete triplets, MCP success/failure/timeout totals, generation or
-   session timeouts, missing responses, missing generated files, missing tool
-   calls, malformed tool invocation text, and stalled output.
+   reports, complete configured arm sets, MCP success/failure/timeout totals,
+   generation or session timeouts, missing responses, missing generated files,
+   missing tool calls, malformed tool invocation text, and stalled output.
 6. Highlight systemic risks immediately, including a runtime checksum or config
    mismatch, any MCP load or tool-call timeout, repeated tool failures, or the
    same infrastructure anomaly in multiple arms.
 7. Do not stop, cancel, retry, replace, or exclude results without the user's
    direction. Preserve failed attempts so the user can decide how to proceed.
 8. Before generating comparisons, report the final expected report count,
-   triplet completeness, MCP health totals, anomaly inventory, and any retry
-   candidates to the user.
+   configured-arm completeness, MCP health totals, anomaly inventory, and any
+   retry candidates to the user. Keep prompt checks, language checks, and
+   program checks separate for every arm; do not combine their aggregates.
 
 ### Compilation grader prerequisites
 

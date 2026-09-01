@@ -68,6 +68,18 @@ func validateToolEntry(entry ToolEntry, configName string, idx int) error {
 		if entry.MCPType != "" && entry.MCPType != "local" && entry.MCPType != "remote" {
 			return fmt.Errorf("config %q: tools[%d] mcp entry has invalid mcp_type %q", configName, idx, entry.MCPType)
 		}
+		if entry.MCPAuth != "" && entry.MCPAuth != "azure_cli" {
+			return fmt.Errorf("config %q: tools[%d] mcp entry has invalid mcp_auth %q", configName, idx, entry.MCPAuth)
+		}
+		if entry.MCPAuth != "" && mcpType != "remote" {
+			return fmt.Errorf("config %q: tools[%d] mcp_auth is only valid for remote mcp entries", configName, idx)
+		}
+		if entry.MCPAuth == "azure_cli" && len(entry.MCPScopes) == 0 {
+			return fmt.Errorf("config %q: tools[%d] azure_cli mcp_auth requires mcp_scopes", configName, idx)
+		}
+		if entry.MCPAuth == "" && len(entry.MCPScopes) > 0 {
+			return fmt.Errorf("config %q: tools[%d] mcp_scopes requires mcp_auth", configName, idx)
+		}
 	case "skill":
 		if entry.Path == "" && entry.Repo == "" {
 			return fmt.Errorf("config %q: tools[%d] skill entry missing path or repo", configName, idx)

@@ -1,10 +1,60 @@
-# Two-arm comparison: neither Azure tool versus Azure MCP + Microsoft SDK skills.
-# Do not run with --pairwise; select both config names explicitly.
+# Three-arm Foundry comparison: baseline, all Foundry tools except the
+# language-specific Microsoft SDK skills, and all Foundry tools.
+# Run with --tags foundry. Do not use --pairwise; select all three config names.
 configs:
   - name: js-ts-azure-tools/baseline
     description: "JavaScript/TypeScript baseline without Azure MCP or Microsoft SDK skills"
     generator:
       model: "gpt-5.6-sol"
+      system_prompt: >
+        When the prompt requests code, create a complete runnable project in the
+        workspace using file-write tools. Include all required source files and
+        dependency or project manifests. Place the primary project and its
+        manifest at the workspace root so standard build commands run there.
+        Do not provide the implementation only as Markdown code blocks in the
+        final response. The final response may summarize the created files and
+        include any requested explanation.
+    reviewer:
+      models:
+        - "gpt-5.6-sol"
+      tools:
+        - name: reviewer-skills
+          type: skill
+          source: local
+          skill_dir: true
+          path: "./skills/reviewer"
+    limits:
+      max_turns: 100
+
+  - name: js-ts-azure-tools/azure-skill-mcp
+    description: "JavaScript/TypeScript with Azure MCP, Foundry MCP, and general Azure skills"
+    generator:
+      model: "gpt-5.6-sol"
+      system_prompt: >
+        When the prompt requests code, create a complete runnable project in the
+        workspace using file-write tools. Include all required source files and
+        dependency or project manifests. Place the primary project and its
+        manifest at the workspace root so standard build commands run there.
+        Do not provide the implementation only as Markdown code blocks in the
+        final response. The final response may summarize the created files and
+        include any requested explanation.
+      tools:
+        - name: azure
+          type: mcp
+          command: npx
+          args: ["-y", "@azure/mcp@3.0.0-beta.38", "server", "start"]
+          mcp_tools: ["*"]
+        - name: foundry
+          type: mcp
+          mcp_type: remote
+          url: https://mcp.ai.azure.com
+          mcp_tools: ["*"]
+          mcp_auth: azure_cli
+          mcp_scopes: ["https://mcp.ai.azure.com/Foundry.Mcp.Tools"]
+        - name: azure-skills
+          type: plugin
+          source: remote
+          repo: microsoft/azure-skills
     reviewer:
       models:
         - "gpt-5.6-sol"
@@ -18,15 +68,34 @@ configs:
       max_turns: 100
 
   - name: js-ts-azure-tools/with-azure-tools
-    description: "JavaScript/TypeScript with Azure MCP and Microsoft SDK skills"
+    description: "JavaScript/TypeScript with Azure MCP, Foundry MCP, general Azure skills, and TypeScript SDK skills"
     generator:
       model: "gpt-5.6-sol"
+      system_prompt: >
+        When the prompt requests code, create a complete runnable project in the
+        workspace using file-write tools. Include all required source files and
+        dependency or project manifests. Place the primary project and its
+        manifest at the workspace root so standard build commands run there.
+        Do not provide the implementation only as Markdown code blocks in the
+        final response. The final response may summarize the created files and
+        include any requested explanation.
       tools:
         - name: azure
           type: mcp
           command: npx
-          args: ["-y", "@azure/mcp@latest", "server", "start"]
+          args: ["-y", "@azure/mcp@3.0.0-beta.38", "server", "start"]
           mcp_tools: ["*"]
+        - name: foundry
+          type: mcp
+          mcp_type: remote
+          url: https://mcp.ai.azure.com
+          mcp_tools: ["*"]
+          mcp_auth: azure_cli
+          mcp_scopes: ["https://mcp.ai.azure.com/Foundry.Mcp.Tools"]
+        - name: azure-skills
+          type: plugin
+          source: remote
+          repo: microsoft/azure-skills
         - name: azure-sdk-typescript
           type: plugin
           source: remote
