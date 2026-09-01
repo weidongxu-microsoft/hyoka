@@ -13,20 +13,23 @@ Azure-specific tools or skills to the coding agent.
 |---|---|---|---:|---|
 | Python | Baseline | In progress | 6/10 | Smoke plus 5 remaining cases complete |
 | .NET | Baseline | In progress | 8/10 | Language run active |
-| Java | Baseline | In progress | 4/10 | Language run active |
+| Java | Baseline | In progress | 5/10 | Language run active |
 | JavaScript/TypeScript | Baseline | In progress | 6/10 | Language run active |
 
 ## Prompt checks
 
-Python smoke: 15/16 reviewer checks passed. Proper Exception Handling failed.
+Interim: 215/217 passed (99.1%).
 
 ## Language checks
 
-Python smoke: included in the 15/16 reviewer result.
+Interim: 124/169 passed (73.4%).
 
 ## Program checks
 
-Python smoke: passed `python -m compileall -q .`.
+Interim: 31/31 passed (100%).
+
+These rates cover the 25 reports preserved at this checkpoint and will change
+as the remaining evaluations complete.
 
 ## Run health
 
