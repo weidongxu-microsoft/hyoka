@@ -27,6 +27,86 @@ properties:
 Write auth code for Azure Blob Storage.
 `
 
+const validAIAgentsPrompt = `---
+id: ai-agents-dp-python-basic
+properties:
+  service: ai-agents
+  plane: data-plane
+  language: python
+  category: agents
+  difficulty: basic
+  description: "Create a basic Azure AI Agents application"
+  created: "2026-08-26"
+  author: test
+---
+
+# Basic Azure AI agent
+
+## Prompt
+
+Create an Azure AI Agents application.
+`
+
+const validAIProjectsPrompt = `---
+id: ai-projects-dp-python-inventory
+properties:
+  service: ai-projects
+  plane: data-plane
+  language: python
+  category: projects
+  difficulty: intermediate
+  description: "List Azure AI project resources"
+  created: "2026-08-26"
+  author: test
+---
+
+# Azure AI project inventory
+
+## Prompt
+
+List project resources.
+`
+
+const validTextTranslationPrompt = `---
+id: text-translation-dp-python-multilingual-translation
+properties:
+  service: text-translation
+  plane: data-plane
+  language: python
+  category: translation
+  difficulty: intermediate
+  description: "Translate text into multiple languages"
+  created: "2026-08-27"
+  author: test
+---
+
+# Multilingual text translation
+
+## Prompt
+
+Translate text into French and Japanese.
+`
+
+const validDocumentTranslationPrompt = `---
+id: document-translation-dp-python-single-document
+properties:
+  service: document-translation
+  plane: data-plane
+  language: python
+  category: translation
+  difficulty: intermediate
+  description: "Translate one local document"
+  created: "2026-08-27"
+  author: test
+---
+
+# Single document translation
+
+## Prompt
+
+Translate one local document.
+`
+
 const invalidServicePrompt = `---
 id: unknown-dp-dotnet-test
 properties:
@@ -120,6 +200,58 @@ t.Errorf("expected validation to pass, got errors: %v", result.Errors)
 }
 if result.TotalFiles != 1 {
 t.Errorf("expected 1 file, got %d", result.TotalFiles)
+}
+}
+
+func TestValidateAIAgentsValues(t *testing.T) {
+dir := t.TempDir()
+writePromptFile(t, dir, "ai-agents.prompt.md", validAIAgentsPrompt)
+
+result, err := Validate(dir)
+if err != nil {
+t.Fatalf("unexpected error: %v", err)
+}
+if !result.OK() {
+t.Errorf("expected validation to pass, got errors: %v", result.Errors)
+}
+}
+
+func TestValidateAIProjectsValues(t *testing.T) {
+dir := t.TempDir()
+writePromptFile(t, dir, "ai-projects.prompt.md", validAIProjectsPrompt)
+
+result, err := Validate(dir)
+if err != nil {
+t.Fatalf("unexpected error: %v", err)
+}
+if !result.OK() {
+t.Errorf("expected validation to pass, got errors: %v", result.Errors)
+}
+}
+
+func TestValidateTextTranslationValues(t *testing.T) {
+	dir := t.TempDir()
+	writePromptFile(t, dir, "text-translation.prompt.md", validTextTranslationPrompt)
+
+	result, err := Validate(dir)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if !result.OK() {
+		t.Errorf("expected validation to pass, got errors: %v", result.Errors)
+	}
+}
+
+func TestValidateDocumentTranslationValues(t *testing.T) {
+dir := t.TempDir()
+writePromptFile(t, dir, "document-translation.prompt.md", validDocumentTranslationPrompt)
+
+result, err := Validate(dir)
+if err != nil {
+t.Fatalf("unexpected error: %v", err)
+}
+if !result.OK() {
+t.Errorf("expected validation to pass, got errors: %v", result.Errors)
 }
 }
 
