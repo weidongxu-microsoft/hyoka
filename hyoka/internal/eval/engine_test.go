@@ -609,8 +609,8 @@ func TestGuardrailDefaultValues(t *testing.T) {
 	if engine.opts.MaxTurns != 25 {
 		t.Errorf("default MaxTurns: expected 25, got %d", engine.opts.MaxTurns)
 	}
-	if engine.opts.MaxSessionActions != 50 {
-		t.Errorf("default MaxSessionActions: expected 50, got %d", engine.opts.MaxSessionActions)
+	if engine.opts.MaxSessionActions != 100 {
+		t.Errorf("default MaxSessionActions: expected 100, got %d", engine.opts.MaxSessionActions)
 	}
 	if engine.opts.MaxFiles != 50 {
 		t.Errorf("default MaxFiles: expected 50, got %d", engine.opts.MaxFiles)
@@ -622,7 +622,7 @@ func TestResolveLimitsNilFallsBackToDefaults(t *testing.T) {
 	cfg := config.ToolConfig{Name: "no-limits", Generator: &config.GeneratorConfig{Model: "gpt-4"}}
 	lim := engine.resolveLimits(cfg, nil)
 	if lim.maxTurns != 25 { t.Errorf("expected maxTurns 25, got %d", lim.maxTurns) }
-	if lim.maxSessionActions != 50 { t.Errorf("expected maxSessionActions 50, got %d", lim.maxSessionActions) }
+	if lim.maxSessionActions != 100 { t.Errorf("expected maxSessionActions 100, got %d", lim.maxSessionActions) }
 	if lim.maxFiles != 50 { t.Errorf("expected maxFiles 50, got %d", lim.maxFiles) }
 }
 
@@ -631,7 +631,7 @@ func TestResolveLimitsZeroFieldsFallBackToDefaults(t *testing.T) {
 	cfg := config.ToolConfig{Name: "zero", Generator: &config.GeneratorConfig{Model: "gpt-4"}, Limits: &config.SessionLimits{}}
 	lim := engine.resolveLimits(cfg, nil)
 	if lim.maxTurns != 25 { t.Errorf("expected 25, got %d", lim.maxTurns) }
-	if lim.maxSessionActions != 50 { t.Errorf("expected 50, got %d", lim.maxSessionActions) }
+	if lim.maxSessionActions != 100 { t.Errorf("expected 100, got %d", lim.maxSessionActions) }
 	if lim.maxFiles != 50 { t.Errorf("expected 50, got %d", lim.maxFiles) }
 }
 
@@ -649,7 +649,7 @@ func TestResolveLimitsPartialOverride(t *testing.T) {
 	cfg := config.ToolConfig{Name: "partial", Generator: &config.GeneratorConfig{Model: "gpt-4"}, Limits: &config.SessionLimits{MaxTurns: 10}}
 	lim := engine.resolveLimits(cfg, nil)
 	if lim.maxTurns != 10 { t.Errorf("expected 10, got %d", lim.maxTurns) }
-	if lim.maxSessionActions != 50 { t.Errorf("expected 50, got %d", lim.maxSessionActions) }
+	if lim.maxSessionActions != 100 { t.Errorf("expected 100, got %d", lim.maxSessionActions) }
 	if lim.maxFiles != 50 { t.Errorf("expected 50, got %d", lim.maxFiles) }
 }
 
@@ -779,8 +779,8 @@ func TestStubEvalLifecycle(t *testing.T) {
 	if r.GuardrailMaxFiles != 50 {
 		t.Errorf("expected GuardrailMaxFiles 50, got %d", r.GuardrailMaxFiles)
 	}
-	if r.GuardrailMaxSessionActions != 50 {
-		t.Errorf("expected GuardrailMaxSessionActions 50, got %d", r.GuardrailMaxSessionActions)
+	if r.GuardrailMaxSessionActions != 100 {
+		t.Errorf("expected GuardrailMaxSessionActions 100, got %d", r.GuardrailMaxSessionActions)
 	}
 
 	// Verify report files exist on disk

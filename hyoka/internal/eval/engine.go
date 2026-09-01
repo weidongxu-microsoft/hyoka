@@ -181,7 +181,7 @@ func NewEngineWithReviewerFactory(evaluator PromptRunner, factory ReviewerFactor
 		opts.MaxTurns = 25
 	}
 	if opts.MaxSessionActions <= 0 {
-		opts.MaxSessionActions = 50
+		opts.MaxSessionActions = 100
 	}
 	if opts.MaxFiles <= 0 {
 		opts.MaxFiles = 50
