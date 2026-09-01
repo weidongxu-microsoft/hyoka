@@ -13,23 +13,23 @@ Azure-specific tools or skills to the coding agent.
 |---|---|---|---:|---|
 | Python | Baseline | Complete | 10/10 | 1 passed, 8 grader-failed, 1 review error |
 | .NET | Baseline | Complete | 10/10 | 6 passed, 4 grader-failed evaluations |
-| Java | Baseline | In progress | 8/10 | Language run active |
+| Java | Baseline | Complete | 10/10 | 10 grader-failed evaluations |
 | JavaScript/TypeScript | Baseline | Complete | 10/10 | 10 grader-failed evaluations |
 
 ## Prompt checks
 
-Interim: 317/327 passed (96.9%).
+Primary run: 338/348 passed (97.1%).
 
 ## Language checks
 
-Interim: 191/268 passed (71.3%).
+Primary run: 207/290 passed (71.4%).
 
 ## Program checks
 
-Interim: 47/48 passed (97.9%).
+Primary run: 49/50 passed (98.0%).
 
-These rates cover the 38 reports preserved at this checkpoint and will change
-as the remaining evaluations complete.
+These rates cover all 40 primary reports. Final selected rates may change after
+the two approved JavaScript/TypeScript action-limit reruns complete.
 
 ## Run health
 
@@ -61,6 +61,10 @@ The JavaScript/TypeScript stream preserved 10/10 reports. `file-search` and
 `evaluation-run` also failed one TypeScript compile check. Transliteration
 issued one malformed PowerShell command and corrected it on the next action.
 These three cases are preserved as retry candidates; no retry has been run.
+
+The Java stream preserved 10/10 reports with all generations, reviews, generated
+file sets, tool calls, and Program Checks completing successfully. Its failures
+are grader outcomes rather than infrastructure failures.
 
 ## Interpretation limits
 
