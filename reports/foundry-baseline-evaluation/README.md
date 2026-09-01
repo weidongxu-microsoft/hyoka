@@ -11,10 +11,10 @@ Azure-specific tools or skills to the coding agent.
 
 | Language | Configuration | Status | Reports | Notes |
 |---|---|---|---:|---|
-| Python | Baseline | In progress | 1/10 | Smoke case completed |
-| .NET | Baseline | In progress | 0/10 | Language run started |
-| Java | Baseline | In progress | 0/10 | Language run started |
-| JavaScript/TypeScript | Baseline | In progress | 0/10 | Language run started |
+| Python | Baseline | In progress | 3/10 | Smoke plus 2 remaining cases complete |
+| .NET | Baseline | In progress | 2/10 | Language run active |
+| Java | Baseline | In progress | 1/10 | Language run active |
+| JavaScript/TypeScript | Baseline | In progress | 1/10 | Language run active |
 
 ## Prompt checks
 
