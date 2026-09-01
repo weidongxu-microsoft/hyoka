@@ -25,39 +25,37 @@ skills plugin is available.
 
 ## Methodology
 
-Each prompt runs once with every applicable configuration. The prompt, generator
-model, system instructions, reviewer model, and limits remain the same; only the
-available tools and skills differ.
+An agent-friendly SDK enables a coding agent to translate a normal developer
+request into a correct, idiomatic, and buildable project without requiring
+Azure-specific assistance.
 
-Before each language run:
+The evaluation measures this through three independent dimensions:
 
-1. Validate the checked-in prompts, criteria, and configurations.
-2. Confirm the expected prompt and report counts with a dry run.
-3. Run one prompt across all configurations as a smoke check.
-4. Run the full language set and preserve every result, including failures.
-5. Reconcile generated reports against the expected comparison sets.
+- **Prompt Checks — task completion and API usability:** Derived from each
+  prompt's `## Evaluation Criteria`, these checks determine whether the agent
+  selects the appropriate packages, clients, authentication mechanisms, and
+  operations. Passing indicates that the SDK's APIs and usage patterns can be
+  applied correctly from the developer request.
+- **Language Checks — idiomatic SDK integration:** Defined in
+  `criteria/language/<language>.yaml`, these checks evaluate language-specific
+  Azure SDK conventions, including authentication, asynchronous usage,
+  exception handling, and resource management. Passing indicates that the SDK
+  can be used correctly within the conventions of its target language.
+- **Program Checks — project buildability:** These checks restore and compile
+  the generated project. Passing provides objective evidence that the selected
+  packages, API signatures, project structure, and dependencies work together.
 
-### Prompt Checks
+The baseline configuration is the primary measure of agent-friendliness because
+the coding agent receives no Azure-specific tools or skills. The additional
+configurations are diagnostic: they show whether external guidance can address
+failures, but they do not independently demonstrate that the SDK itself is
+agent-friendly.
 
-Prompt Checks come from each prompt's `## Evaluation Criteria` section. The
-reviewer evaluates every listed requirement independently against the generated
-project. Examples include required packages, client construction, requested
-operations, authentication, and error handling.
-
-### Language Checks
-
-Language Checks come from `criteria/language/<language>.yaml` and apply through
-the file's language condition. They evaluate language-specific Azure SDK
-practices such as authentication, exception handling, and asynchronous usage.
-
-Program Checks remain separate. They run the configured build command in the
-generated project; exit code 0 passes and any other result fails.
-
-Together, the checks measure three aspects of agent-friendliness:
-
-- **Task completion:** The project satisfies the prompt-specific requirements.
-- **SDK usability:** The project follows language and Azure SDK conventions.
-- **Buildability:** The generated project restores and compiles.
+Results are reported separately for each dimension. This prevents strong
+performance in one area, such as compilation, from hiding failures in task
+completion or idiomatic SDK usage. Coverage across services, tasks, and
+languages indicates whether observed behavior is broadly consistent rather than
+limited to one API or scenario.
 
 ## Grading and scoring
 
