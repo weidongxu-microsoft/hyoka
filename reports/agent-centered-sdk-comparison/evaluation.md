@@ -2,13 +2,14 @@
 
 ## Objective
 
-This evaluation tests whether Azure MCP, general Azure skills, or
-language-specific Azure SDK skills improve generated projects over the baseline
-configuration. The baseline is the primary reference because it uses the same
-model and prompts without the added tools or skills.
+This evaluation tests whether Azure client libraries are agent-friendly: can an
+AI coding agent produce correct, idiomatic, and buildable Azure SDK projects
+from representative developer prompts?
 
-The run is incomplete. Current findings are preliminary and cover only eight
-complete .NET comparison sets.
+The baseline configuration is the primary evidence because it measures how well
+the agent can use the libraries without Azure-specific tools or skills. The
+other configurations show whether additional guidance changes the outcome, but
+that comparison is secondary to the agent-friendliness assessment.
 
 ## Configurations
 
@@ -51,6 +52,12 @@ practices such as authentication, exception handling, and asynchronous usage.
 Program Checks remain separate. They run the configured build command in the
 generated project; exit code 0 passes and any other result fails.
 
+Together, the checks measure three aspects of agent-friendliness:
+
+- **Task completion:** The project satisfies the prompt-specific requirements.
+- **SDK usability:** The project follows language and Azure SDK conventions.
+- **Buildability:** The generated project restores and compiles.
+
 ## Grading and scoring
 
 Each applicable criterion produces a pass or fail point. The current Prompt and
@@ -64,7 +71,7 @@ Prompt, Language, and Program Checks are not combined into one headline score.
 Skipped checks are excluded. Generation, reviewer, and infrastructure failures
 are reported separately because they are not evidence of code quality.
 
-## Current data
+## Results
 
 Raw smoke and full-run data are stored under:
 
@@ -74,38 +81,18 @@ Raw smoke and full-run data are stored under:
 The raw reports include generated files, grader points and reasoning, tool
 calls, session events, timelines, configuration details, and environment data.
 
-### .NET checkpoint
-
-- 25 of 60 reports
-- 8 of 20 complete comparison sets
-- Two reviewer HTTP 400 failures
-- One generation without a report
-
-| Configuration | Prompt Checks | Language Checks | Program Checks |
-|---|---:|---:|---:|
-| Baseline | 46/53 | 22/24 | 8/8 |
-| Azure MCP and skills | 40/46* | 23/24 | 7/8 |
-| Azure SDK skills | 46/53 | 23/24 | 8/8 |
-
-\* One Prompt Check review failed with HTTP 400, so this result is not directly
-comparable.
-
-## Preliminary findings
-
-The baseline remains competitive. Compared with the Azure SDK skills
-configuration, five of eight Prompt Check results tie, the baseline leads two,
-and the SDK skills configuration leads one. Each skills configuration improves
-Language Checks by only one pass, and neither improves Program Checks.
-
-The available results do not show a consistent or material improvement from
-adding MCP or skills.
+Evaluation data, findings, and configuration comparisons will be added after the
+run is complete and the expected reports are reconciled.
 
 ## Assumptions and limitations
 
-- Only eight .NET comparison sets are complete; other languages may differ.
 - Each prompt runs once per configuration, so model variability is not measured.
 - LLM-reviewed checks are nondeterministic and depend on one reviewer model.
 - Build results depend on installed toolchains and dependency availability.
 - Reviewer and generation failures reduce comparability and require separate
   reporting.
+- The selected prompts represent common Azure SDK tasks but do not cover every
+  library or usage pattern.
+- Tools and skills may improve agent performance, but they do not by themselves
+  demonstrate that the underlying library is agent-friendly.
 - Final findings require all expected reports and complete comparison sets.
