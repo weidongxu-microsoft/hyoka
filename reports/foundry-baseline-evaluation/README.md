@@ -13,22 +13,22 @@ Azure-specific tools or skills to the coding agent.
 |---|---|---|---:|---|
 | Python | Baseline | Complete | 10/10 | 1 passed, 8 grader-failed, 1 review error |
 | .NET | Baseline | Complete | 10/10 | 6 passed, 4 grader-failed evaluations |
-| Java | Baseline | In progress | 7/10 | Language run active |
-| JavaScript/TypeScript | Baseline | In progress | 9/10 | Language run active |
+| Java | Baseline | In progress | 8/10 | Language run active |
+| JavaScript/TypeScript | Baseline | Complete | 10/10 | 10 grader-failed evaluations |
 
 ## Prompt checks
 
-Interim: 301/311 passed (96.8%).
+Interim: 317/327 passed (96.9%).
 
 ## Language checks
 
-Interim: 177/247 passed (71.7%).
+Interim: 191/268 passed (71.3%).
 
 ## Program checks
 
-Interim: 44/45 passed (97.8%).
+Interim: 47/48 passed (97.9%).
 
-These rates cover the 36 reports preserved at this checkpoint and will change
+These rates cover the 38 reports preserved at this checkpoint and will change
 as the remaining evaluations complete.
 
 ## Run health
@@ -55,6 +55,12 @@ generated files. The `evaluation-run` case generated 60 files, causing all six
 review requests to exceed the model token limit. Its Program Check passed, but
 its Prompt and Language Checks are unavailable; the preserved result is the
 only current infrastructure retry candidate.
+
+The JavaScript/TypeScript stream preserved 10/10 reports. `file-search` and
+`evaluation-run` reached 51/50 session actions and returned partial results.
+`evaluation-run` also failed one TypeScript compile check. Transliteration
+issued one malformed PowerShell command and corrected it on the next action.
+These three cases are preserved as retry candidates; no retry has been run.
 
 ## Interpretation limits
 
