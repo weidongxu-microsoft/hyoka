@@ -22,7 +22,7 @@ func TestBuildRerunCommand(t *testing.T) {
 			baseConfigName:  "",
 			generatorModel:  "claude-opus-4.6",
 			pairwiseVariant: "",
-			opts:            EngineOptions{MaxSessionActions: 50},
+			opts:            EngineOptions{MaxSessionActions: 100},
 			want:            "hyoka run --prompt-id test-prompt-id --config baseline/claude-opus-4.6",
 		},
 		{
@@ -32,7 +32,7 @@ func TestBuildRerunCommand(t *testing.T) {
 			baseConfigName:  "python-pairwise",
 			generatorModel:  "claude-opus-4.6",
 			pairwiseVariant: "",
-			opts:            EngineOptions{MaxSessionActions: 50},
+			opts:            EngineOptions{MaxSessionActions: 100},
 			want:            "hyoka run --prompt-id test-prompt-id --config python-pairwise --model claude-opus-4.6",
 		},
 		{
@@ -42,7 +42,7 @@ func TestBuildRerunCommand(t *testing.T) {
 			baseConfigName:  "python-pairwise",
 			generatorModel:  "gpt-5.3-codex",
 			pairwiseVariant: "",
-			opts:            EngineOptions{MaxSessionActions: 50},
+			opts:            EngineOptions{MaxSessionActions: 100},
 			want:            "hyoka run --prompt-id key-vault-dp-python-crud --config python-pairwise --model gpt-5.3-codex",
 		},
 		{
@@ -52,7 +52,7 @@ func TestBuildRerunCommand(t *testing.T) {
 			baseConfigName:  "",
 			generatorModel:  "claude-opus-4.6",
 			pairwiseVariant: "",
-			opts:            EngineOptions{SkipReview: true, MaxSessionActions: 50},
+			opts:            EngineOptions{SkipReview: true, MaxSessionActions: 100},
 			want:            "hyoka run --prompt-id test-prompt --config baseline/opus --skip-review",
 		},
 		{
@@ -62,18 +62,18 @@ func TestBuildRerunCommand(t *testing.T) {
 			baseConfigName:  "",
 			generatorModel:  "claude-opus-4.6",
 			pairwiseVariant: "",
-			opts:            EngineOptions{MonitorResources: true, MaxSessionActions: 50},
+			opts:            EngineOptions{MonitorResources: true, MaxSessionActions: 100},
 			want:            "hyoka run --prompt-id test-prompt --config baseline/opus --monitor-resources",
 		},
 		{
-			name:            "with custom max-session-actions",
+			name:            "with lower custom max-session-actions",
 			promptID:        "test-prompt",
 			configName:      "baseline/opus",
 			baseConfigName:  "",
 			generatorModel:  "claude-opus-4.6",
 			pairwiseVariant: "",
-			opts:            EngineOptions{MaxSessionActions: 100},
-			want:            "hyoka run --prompt-id test-prompt --config baseline/opus --max-session-actions=100",
+			opts:            EngineOptions{MaxSessionActions: 50},
+			want:            "hyoka run --prompt-id test-prompt --config baseline/opus --max-session-actions=50",
 		},
 		{
 			name:            "multi-model with all flags",
@@ -92,7 +92,7 @@ func TestBuildRerunCommand(t *testing.T) {
 			baseConfigName:  "",
 			generatorModel:  "claude-opus-4.6",
 			pairwiseVariant: "",
-			opts:            EngineOptions{MaxSessionActions: 50},
+			opts:            EngineOptions{MaxSessionActions: 100},
 			want:            "hyoka run --prompt-id identity-dp-python-default-credential --config baseline/claude-opus-4.6",
 		},
 		// ── Option F: Pairwise variant tests ──────────────────────────
@@ -103,7 +103,7 @@ func TestBuildRerunCommand(t *testing.T) {
 			baseConfigName:  "python-pairwise",
 			generatorModel:  "claude-opus-4.6",
 			pairwiseVariant: "baseline",
-			opts:            EngineOptions{MaxSessionActions: 50},
+			opts:            EngineOptions{MaxSessionActions: 100},
 			want:            "hyoka run --prompt-id test-prompt --config python-pairwise --model claude-opus-4.6 --pairwise-variant baseline",
 		},
 		{
@@ -113,7 +113,7 @@ func TestBuildRerunCommand(t *testing.T) {
 			baseConfigName:  "python-pairwise",
 			generatorModel:  "claude-opus-4.6",
 			pairwiseVariant: "without-azure",
-			opts:            EngineOptions{MaxSessionActions: 50},
+			opts:            EngineOptions{MaxSessionActions: 100},
 			want:            "hyoka run --prompt-id test-prompt --config python-pairwise --model claude-opus-4.6 --pairwise-variant without-azure",
 		},
 		{
@@ -123,7 +123,7 @@ func TestBuildRerunCommand(t *testing.T) {
 			baseConfigName:  "python-pairwise",
 			generatorModel:  "claude-opus-4.6",
 			pairwiseVariant: "without-azure/storage_blob_list",
-			opts:            EngineOptions{MaxSessionActions: 50},
+			opts:            EngineOptions{MaxSessionActions: 100},
 			want:            `hyoka run --prompt-id test-prompt --config python-pairwise --model claude-opus-4.6 --pairwise-variant "without-azure/storage_blob_list"`,
 		},
 		{
@@ -133,7 +133,7 @@ func TestBuildRerunCommand(t *testing.T) {
 			baseConfigName:  "python-pairwise",
 			generatorModel:  "claude-opus-4.6",
 			pairwiseVariant: "without-azure",
-			opts:            EngineOptions{SkipReview: true, MaxSessionActions: 50},
+			opts:            EngineOptions{SkipReview: true, MaxSessionActions: 100},
 			want:            "hyoka run --prompt-id test-prompt --config python-pairwise --model claude-opus-4.6 --pairwise-variant without-azure --skip-review",
 		},
 		{
@@ -153,7 +153,7 @@ func TestBuildRerunCommand(t *testing.T) {
 			baseConfigName:  "python-pairwise",
 			generatorModel:  "gpt-5.3-codex",
 			pairwiseVariant: "without-azure",
-			opts:            EngineOptions{MaxSessionActions: 50},
+			opts:            EngineOptions{MaxSessionActions: 100},
 			want:            "hyoka run --prompt-id identity-dp-python-default-credential --config python-pairwise --model gpt-5.3-codex --pairwise-variant without-azure",
 		},
 	}

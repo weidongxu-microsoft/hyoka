@@ -34,7 +34,7 @@ expected string
 {"model", ""},
 {"output", "./reports"},
 {"progress", "auto"},
-{"max-session-actions", "50"},
+{"max-session-actions", "100"},
 {"max-turns", "0"},
 {"max-files", "50"},
 {"criteria-dir", ""},

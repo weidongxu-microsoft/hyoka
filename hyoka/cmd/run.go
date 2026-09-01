@@ -100,7 +100,7 @@ func addRunFlags(cmd *cobra.Command, f *runFlags) {
 	cmd.Flags().BoolVarP(&f.autoConfirm, "yes", "y", false, "Skip confirmation prompt for large runs (>10 evaluations)")
 	cmd.Flags().BoolVar(&f.allConfigs, "all-configs", false, "Run all configs when no --config filter is specified (required for multi-config runs)")
 	// Generator guardrails (#35)
-	cmd.Flags().IntVar(&f.maxSessionActions, "max-session-actions", 50, "Maximum actions per Copilot session (reasoning, response, or tool call each count as 1)")
+	cmd.Flags().IntVar(&f.maxSessionActions, "max-session-actions", 100, "Maximum actions per Copilot session (reasoning, response, or tool call each count as 1)")
 	cmd.Flags().IntVar(&f.maxTurns, "max-turns", 0, "Maximum conversation turns per generation (0 = use config/default)")
 	cmd.Flags().IntVar(&f.maxFiles, "max-files", 50, "Maximum generated files per evaluation before aborting")
 	// Generator safety (#36)

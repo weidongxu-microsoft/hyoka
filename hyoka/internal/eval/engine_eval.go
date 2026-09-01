@@ -1046,7 +1046,7 @@ func buildRerunCommand(promptID, configName, baseConfigName, generatorModel, pai
 		parts = append(parts, "--monitor-resources")
 	}
 
-	if opts.MaxSessionActions != 50 {
+	if opts.MaxSessionActions != 100 {
 		parts = append(parts, fmt.Sprintf("--max-session-actions=%d", opts.MaxSessionActions))
 	}
 
