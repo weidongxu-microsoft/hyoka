@@ -18,11 +18,11 @@ Azure-specific tools or skills to the coding agent.
 
 ## Prompt checks
 
-Final selected: 344/347 passed (99.1%).
+Final selected: 354/357 passed (99.2%).
 
 ## Language checks
 
-Final selected: 209/285 passed (73.3%).
+Final selected: 213/290 passed (73.4%).
 
 ## Program checks
 
@@ -51,13 +51,13 @@ plugin definition, but generation sessions were created with zero configured
 skills and zero configured MCP servers; the plugin was not exposed to the
 coding agent.
 
-The Python stream completed all 10 generations with final responses and
-generated files. The `evaluation-run` case generated 60 files, causing all six
-review requests to exceed the model token limit. Its Program Check passed, but
-its Prompt and Language Checks are unavailable. One controlled retry returned
-an HTTP 400 "resource not found" generation error and produced no files, so it
-was not selected. Both attempts remain preserved, and no further retry is
-scheduled.
+The Python `evaluation-run` primary attempt generated 60 files, causing all six
+review requests to exceed the model token limit. A first controlled retry
+returned an HTTP 400 "resource not found" generation error and produced no
+files. A second controlled retry completed generation and review in 13/50
+actions, produced three files, passed 10/10 Prompt Checks and 4/5 Language
+Checks, and passed its Program Check. The healthy retry replaces the primary
+attempt in the final dataset; all three attempts remain preserved.
 
 The JavaScript/TypeScript stream preserved 10/10 primary reports. `file-search`
 and `evaluation-run` reached 51/50 session actions and returned partial results.
