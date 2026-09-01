@@ -11,24 +11,24 @@ Azure-specific tools or skills to the coding agent.
 
 | Language | Configuration | Status | Reports | Notes |
 |---|---|---|---:|---|
-| Python | Baseline | In progress | 6/10 | Smoke plus 5 remaining cases complete |
-| .NET | Baseline | In progress | 8/10 | Language run active |
-| Java | Baseline | In progress | 5/10 | Language run active |
-| JavaScript/TypeScript | Baseline | In progress | 6/10 | Language run active |
+| Python | Baseline | In progress | 8/10 | Smoke plus 7 remaining cases complete |
+| .NET | Baseline | Complete | 10/10 | 6 passed, 4 grader-failed evaluations |
+| Java | Baseline | In progress | 6/10 | Language run active |
+| JavaScript/TypeScript | Baseline | In progress | 7/10 | Language run active |
 
 ## Prompt checks
 
-Interim: 215/217 passed (99.1%).
+Interim: 259/268 passed (96.6%).
 
 ## Language checks
 
-Interim: 124/169 passed (73.4%).
+Interim: 147/206 passed (71.4%).
 
 ## Program checks
 
-Interim: 31/31 passed (100%).
+Interim: 37/38 passed (97.4%).
 
-These rates cover the 25 reports preserved at this checkpoint and will change
+These rates cover the 31 reports preserved at this checkpoint and will change
 as the remaining evaluations complete.
 
 ## Run health
@@ -43,6 +43,12 @@ configuration names, or Foundry prompt checkout were incorrect. They produced
 no reports or Copilot sessions and are not evaluation attempts. Language runs
 use isolated worktrees at the Foundry comparison commit and checksum-verified
 Copilot CLI `v1.0.81-11`.
+
+The .NET stream completed without generation, session, review, MCP, action-limit,
+or turn-limit failures. A debug log entry showed discovery of an `azure-python`
+plugin definition, but generation sessions were created with zero configured
+skills and zero configured MCP servers; the plugin was not exposed to the
+coding agent.
 
 ## Interpretation limits
 
