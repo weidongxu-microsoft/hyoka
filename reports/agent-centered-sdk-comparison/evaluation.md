@@ -73,14 +73,6 @@ are reported separately because they are not evidence of code quality.
 
 ## Results
 
-Raw smoke and full-run data are stored under:
-
-- `reports/agent-centered-sdk-comparison/smoke/`
-- `reports/agent-centered-sdk-comparison/full/`
-
-The raw reports include generated files, grader points and reasoning, tool
-calls, session events, timelines, configuration details, and environment data.
-
 Evaluation data, findings, and configuration comparisons will be added after the
 run is complete and the expected reports are reconciled.
 
