@@ -13,7 +13,8 @@ that comparison is secondary to the agent-friendliness assessment.
 
 ## Configurations
 
-- **Baseline:** No Azure MCP or generator skills.
+- **Baseline:** No Azure-specific tools or skills are provided to the coding
+  agent.
 - **Azure MCP and skills:** Azure MCP plus the general Azure skills plugin.
 - **Azure SDK skills:** Azure MCP, general Azure skills, and the applicable
   language-specific SDK skills plugin.
