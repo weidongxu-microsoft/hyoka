@@ -14,22 +14,23 @@ Azure-specific tools or skills to the coding agent.
 | Python | Baseline | Complete | 10/10 | 1 passed, 8 grader-failed, 1 review error |
 | .NET | Baseline | Complete | 10/10 | 6 passed, 4 grader-failed evaluations |
 | Java | Baseline | Complete | 10/10 | 10 grader-failed evaluations |
-| JavaScript/TypeScript | Baseline | Complete | 10/10 | 10 grader-failed evaluations |
+| JavaScript/TypeScript | Baseline | Complete | 10/10 | 2 controlled retries selected |
 
 ## Prompt checks
 
-Primary run: 338/348 passed (97.1%).
+Final selected: 344/348 passed (98.9%).
 
 ## Language checks
 
-Primary run: 207/290 passed (71.4%).
+Final selected: 209/290 passed (72.1%).
 
 ## Program checks
 
-Primary run: 49/50 passed (98.0%).
+Final selected: 50/50 passed (100%).
 
-These rates cover all 40 primary reports. Final selected rates may change after
-the two approved JavaScript/TypeScript action-limit reruns complete.
+These rates cover the final 40-report dataset. The original action-limited
+JavaScript/TypeScript attempts remain preserved but are replaced by their
+controlled reruns in these totals.
 
 ## Run health
 
@@ -56,11 +57,12 @@ review requests to exceed the model token limit. Its Program Check passed, but
 its Prompt and Language Checks are unavailable; the preserved result is the
 only current infrastructure retry candidate.
 
-The JavaScript/TypeScript stream preserved 10/10 reports. `file-search` and
-`evaluation-run` reached 51/50 session actions and returned partial results.
-`evaluation-run` also failed one TypeScript compile check. Transliteration
-issued one malformed PowerShell command and corrected it on the next action.
-These three cases are preserved as retry candidates; no retry has been run.
+The JavaScript/TypeScript stream preserved 10/10 primary reports. `file-search`
+and `evaluation-run` reached 51/50 session actions and returned partial results.
+Both were rerun once with a 100-action limit, completed in 14 and 20 actions,
+and passed both Program Checks. The healthy reruns replace both primary attempts
+in the final dataset, irrespective of score direction. Transliteration issued
+one malformed PowerShell command and corrected it on the next action.
 
 The Java stream preserved 10/10 reports with all generations, reviews, generated
 file sets, tool calls, and Program Checks completing successfully. Its failures
