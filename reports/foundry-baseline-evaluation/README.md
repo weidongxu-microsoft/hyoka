@@ -18,11 +18,11 @@ Azure-specific tools or skills to the coding agent.
 
 ## Prompt checks
 
-Final selected: 344/348 passed (98.9%).
+Final selected: 344/347 passed (99.1%).
 
 ## Language checks
 
-Final selected: 209/290 passed (72.1%).
+Final selected: 209/285 passed (73.3%).
 
 ## Program checks
 
