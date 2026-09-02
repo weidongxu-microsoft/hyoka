@@ -366,6 +366,80 @@ func TestValidateToolEntry_RemoteMCPValid(t *testing.T) {
 	}
 }
 
+func TestValidateToolEntry_MCPAuth(t *testing.T) {
+	tests := []struct {
+		name    string
+		entry   ToolEntry
+		wantErr bool
+	}{
+		{
+			name: "remote Azure CLI auth",
+			entry: ToolEntry{
+				Name:      "remote-mcp",
+				Type:      "mcp",
+				MCPType:   "remote",
+				URL:       "https://mcp.example.com",
+				MCPAuth:   "azure_cli",
+				MCPScopes: []string{"https://mcp.example.com/tools"},
+			},
+		},
+		{
+			name: "unsupported auth provider",
+			entry: ToolEntry{
+				Name:      "remote-mcp",
+				Type:      "mcp",
+				MCPType:   "remote",
+				URL:       "https://mcp.example.com",
+				MCPAuth:   "unsupported",
+				MCPScopes: []string{"scope"},
+			},
+			wantErr: true,
+		},
+		{
+			name: "auth on local server",
+			entry: ToolEntry{
+				Name:      "local-mcp",
+				Type:      "mcp",
+				Command:   "example",
+				MCPAuth:   "azure_cli",
+				MCPScopes: []string{"scope"},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Azure CLI auth without scopes",
+			entry: ToolEntry{
+				Name:    "remote-mcp",
+				Type:    "mcp",
+				MCPType: "remote",
+				URL:     "https://mcp.example.com",
+				MCPAuth: "azure_cli",
+			},
+			wantErr: true,
+		},
+		{
+			name: "scopes without auth",
+			entry: ToolEntry{
+				Name:      "remote-mcp",
+				Type:      "mcp",
+				MCPType:   "remote",
+				URL:       "https://mcp.example.com",
+				MCPScopes: []string{"scope"},
+			},
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := validateToolEntry(tt.entry, "test", 0)
+			if (err != nil) != tt.wantErr {
+				t.Fatalf("validateToolEntry() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
 func TestValidateToolEntry_RemoteMCPMissingURL(t *testing.T) {
 	entry := ToolEntry{Name: "remote-mcp", Type: "mcp", MCPType: "remote"}
 	if err := validateToolEntry(entry, "test", 0); err == nil {

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -1093,6 +1094,7 @@ func (e *CopilotPromptRunner) buildSessionConfigForEval(ctx context.Context, cfg
 	}
 	if len(mcpEntries) > 0 {
 		sc.MCPServers = make(map[string]copilot.MCPServerConfig, len(mcpEntries))
+		azureCLIAuthScopes := make(map[string][]string)
 		for _, entry := range mcpEntries {
 			mcpType := entry.ResolvedMCPType()
 			var mcpCfg copilot.MCPServerConfig
@@ -1109,6 +1111,9 @@ func (e *CopilotPromptRunner) buildSessionConfigForEval(ctx context.Context, cfg
 				}
 			}
 			sc.MCPServers[entry.Name] = mcpCfg
+			if entry.MCPAuth == "azure_cli" {
+				azureCLIAuthScopes[entry.Name] = entry.MCPScopes
+			}
 			slog.Info("MCP server configured",
 				"name", entry.Name,
 				"type", mcpType,
@@ -1117,6 +1122,9 @@ func (e *CopilotPromptRunner) buildSessionConfigForEval(ctx context.Context, cfg
 				"args", entry.Args,
 				"tools", entry.MCPTools,
 			)
+		}
+		if len(azureCLIAuthScopes) > 0 {
+			sc.OnMCPAuthRequest = newAzureCLIMCPAuthHandler(azureCLIAuthScopes, getAzureCLIAccessToken)
 		}
 	} else {
 		slog.Debug("No MCP servers configured")
@@ -1133,6 +1141,60 @@ func (e *CopilotPromptRunner) buildSessionConfigForEval(ctx context.Context, cfg
 	}
 
 	return sc
+}
+
+type azureCLIAccessTokenResponse struct {
+	AccessToken string `json:"accessToken"`
+}
+
+type mcpAccessTokenProvider func(context.Context, []string) (string, error)
+
+func newAzureCLIMCPAuthHandler(scopesByServer map[string][]string, tokenProvider mcpAccessTokenProvider) copilot.MCPAuthHandler {
+	return func(request copilot.MCPAuthRequest, _ copilot.MCPAuthInvocation) (*copilot.MCPAuthResult, error) {
+		scopes, ok := scopesByServer[request.ServerName]
+		if !ok {
+			return nil, fmt.Errorf("MCP server %q requested OAuth without a configured authentication provider", request.ServerName)
+		}
+
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+		accessToken, err := tokenProvider(ctx, scopes)
+		if err != nil {
+			return nil, fmt.Errorf("authenticating MCP server %q with Azure CLI: %w", request.ServerName, err)
+		}
+		tokenType := "Bearer"
+		return copilot.MCPAuthResultToken(&copilot.MCPAuthToken{
+			AccessToken: accessToken,
+			TokenType:   &tokenType,
+		}), nil
+	}
+}
+
+func getAzureCLIAccessToken(ctx context.Context, scopes []string) (string, error) {
+	args := []string{"account", "get-access-token", "--scope"}
+	args = append(args, scopes...)
+	args = append(args, "--output", "json")
+	cmd := exec.CommandContext(ctx, "az", args...)
+	output, err := cmd.Output()
+	if err != nil {
+		var stderr string
+		if exitErr, ok := err.(*exec.ExitError); ok {
+			stderr = strings.TrimSpace(string(exitErr.Stderr))
+		}
+		if stderr != "" {
+			return "", fmt.Errorf("%w: %s", err, stderr)
+		}
+		return "", err
+	}
+
+	var response azureCLIAccessTokenResponse
+	if err := json.Unmarshal(output, &response); err != nil {
+		return "", fmt.Errorf("parsing Azure CLI access token response: %w", err)
+	}
+	if response.AccessToken == "" {
+		return "", fmt.Errorf("Azure CLI access token response did not contain accessToken")
+	}
+	return response.AccessToken, nil
 }
 
 // extractToolCalls returns unique tool names from session events.

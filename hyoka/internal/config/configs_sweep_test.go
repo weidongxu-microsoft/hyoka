@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 	"path/filepath"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -107,6 +108,123 @@ func TestConfigSweep_AllRepoConfigsParseUnderNewSchema(t *testing.T) {
 	if saw == 0 {
 		t.Skip("no YAML configs found in configs/ — skipping sweep")
 	}
+}
+
+func TestFoundryComparisonPreservesThreeWayControls(t *testing.T) {
+	configsDir := findRepoConfigsDir(t)
+	if configsDir == "" {
+		t.Skip("repo configs/ directory not locatable from test cwd")
+	}
+
+	languages := []string{"dotnet", "java", "js-ts", "python"}
+	for _, language := range languages {
+		t.Run(language, func(t *testing.T) {
+			threeWay := parseRepoConfig(t, configsDir, language+"-azure-skills-three-way.yaml")
+			cfg := parseRepoConfig(t, configsDir, language+"-azure-tools-comparison.yaml")
+			if len(threeWay.Configs) != 3 {
+				t.Fatalf("three-way arm count = %d, want 3", len(threeWay.Configs))
+			}
+			if len(cfg.Configs) != 3 {
+				t.Fatalf("arm count = %d, want 3", len(cfg.Configs))
+			}
+
+			wantNames := []string{"baseline", "azure-skill-mcp", "with-azure-tools"}
+			comparisonSystemPrompt := cfg.Configs[0].Generator.SystemPrompt
+			for i := range threeWay.Configs {
+				if suffixAfterSlash(cfg.Configs[i].Name) != wantNames[i] {
+					t.Errorf("Foundry arm %d name = %q, want suffix %q", i, cfg.Configs[i].Name, wantNames[i])
+				}
+				if cfg.Configs[i].Generator.SystemPrompt != comparisonSystemPrompt {
+					t.Errorf("Foundry arm %d system prompt differs from baseline", i)
+				}
+
+				foundryGenerator := *cfg.Configs[i].Generator
+				foundryGenerator.SystemPrompt = threeWay.Configs[i].Generator.SystemPrompt
+				if i > 0 {
+					foundryGenerator.Tools = withoutNamedTool(foundryGenerator.Tools, "foundry")
+				}
+				if !reflect.DeepEqual(&foundryGenerator, threeWay.Configs[i].Generator) {
+					t.Errorf("Foundry arm %d generator differs from three-way control beyond the system prompt and Foundry MCP", i)
+				}
+				if !reflect.DeepEqual(cfg.Configs[i].Reviewer, threeWay.Configs[i].Reviewer) {
+					t.Errorf("Foundry arm %d reviewer differs from three-way control", i)
+				}
+				if !reflect.DeepEqual(cfg.Configs[i].Limits, threeWay.Configs[i].Limits) {
+					t.Errorf("Foundry arm %d limits differ from three-way control", i)
+				}
+			}
+
+			for i := 1; i < len(cfg.Configs); i++ {
+				foundryTool, ok := namedTool(cfg.Configs[i].Generator.Tools, "foundry")
+				if !ok {
+					t.Errorf("arm %d does not mount Foundry MCP", i)
+					continue
+				}
+				if foundryTool.ResolvedMCPType() != "remote" ||
+					foundryTool.URL != "https://mcp.ai.azure.com" ||
+					foundryTool.MCPAuth != "azure_cli" ||
+					!reflect.DeepEqual(foundryTool.MCPScopes, []string{"https://mcp.ai.azure.com/Foundry.Mcp.Tools"}) {
+					t.Errorf("arm %d has unexpected Foundry MCP configuration: %+v", i, foundryTool)
+				}
+			}
+
+			withoutMicrosoftSkills := *cfg.Configs[2].Generator
+			withoutMicrosoftSkills.Tools = withoutToolRepo(withoutMicrosoftSkills.Tools, "microsoft/skills")
+			if !reflect.DeepEqual(&withoutMicrosoftSkills, cfg.Configs[1].Generator) {
+				t.Error("fully tooled arm must differ from the second arm only by adding microsoft/skills")
+			}
+		})
+	}
+}
+
+func namedTool(tools []ToolEntry, name string) (ToolEntry, bool) {
+	for _, entry := range tools {
+		if entry.Name == name {
+			return entry, true
+		}
+	}
+	return ToolEntry{}, false
+}
+
+func withoutNamedTool(tools []ToolEntry, name string) []ToolEntry {
+	filtered := make([]ToolEntry, 0, len(tools))
+	for _, entry := range tools {
+		if entry.Name != name {
+			filtered = append(filtered, entry)
+		}
+	}
+	return filtered
+}
+
+func withoutToolRepo(tools []ToolEntry, repo string) []ToolEntry {
+	filtered := make([]ToolEntry, 0, len(tools))
+	for _, entry := range tools {
+		if entry.Repo != repo {
+			filtered = append(filtered, entry)
+		}
+	}
+	return filtered
+}
+
+func parseRepoConfig(t *testing.T, configsDir, name string) *ConfigFile {
+	t.Helper()
+	data, err := os.ReadFile(filepath.Join(configsDir, name))
+	if err != nil {
+		t.Fatalf("read %s: %v", name, err)
+	}
+	cfg, err := Parse(data)
+	if err != nil {
+		t.Fatalf("parse %s: %v", name, err)
+	}
+	return cfg
+}
+
+func suffixAfterSlash(name string) string {
+	_, suffix, ok := strings.Cut(name, "/")
+	if !ok {
+		return name
+	}
+	return suffix
 }
 
 // containsTopLevelPluginsField does a line-based scan for a YAML key

@@ -2,6 +2,7 @@ package eval
 
 import (
 	"context"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -533,5 +534,53 @@ func TestBuildSessionConfig_RemoteMCP(t *testing.T) {
 	}
 	if remoteConfig.URL != "https://mcp.example.com" {
 		t.Errorf("expected url=https://mcp.example.com, got %q", remoteConfig.URL)
+	}
+}
+
+func TestBuildSessionConfig_RemoteMCPAzureCLIAuth(t *testing.T) {
+	e := &CopilotPromptRunner{}
+	cfg := &config.ToolConfig{
+		Name: "test",
+		Generator: &config.GeneratorConfig{
+			Model: "gpt-4",
+			Tools: []config.ToolEntry{
+				{
+					Name:      "foundry",
+					Type:      "mcp",
+					MCPType:   "remote",
+					URL:       "https://mcp.ai.azure.com",
+					MCPAuth:   "azure_cli",
+					MCPScopes: []string{"https://mcp.ai.azure.com/Foundry.Mcp.Tools"},
+				},
+			},
+		},
+	}
+	sc := e.buildSessionConfig(context.Background(), cfg, "/workspace/test", "", nil)
+	if sc.OnMCPAuthRequest == nil {
+		t.Fatal("expected MCP OAuth handler for Azure CLI authenticated server")
+	}
+}
+
+func TestAzureCLIMCPAuthHandler(t *testing.T) {
+	wantScopes := []string{"https://mcp.ai.azure.com/Foundry.Mcp.Tools"}
+	handler := newAzureCLIMCPAuthHandler(
+		map[string][]string{"foundry": wantScopes},
+		func(_ context.Context, scopes []string) (string, error) {
+			if !reflect.DeepEqual(scopes, wantScopes) {
+				t.Fatalf("scopes = %v, want %v", scopes, wantScopes)
+			}
+			return "test-token", nil
+		},
+	)
+
+	result, err := handler(copilot.MCPAuthRequest{ServerName: "foundry"}, copilot.MCPAuthInvocation{})
+	if err != nil {
+		t.Fatalf("handler returned error: %v", err)
+	}
+	if result == nil || result.Token == nil || result.Token.AccessToken != "test-token" {
+		t.Fatalf("unexpected auth result: %#v", result)
+	}
+	if result.Token.TokenType == nil || *result.Token.TokenType != "Bearer" {
+		t.Fatalf("token type = %v, want Bearer", result.Token.TokenType)
 	}
 }
